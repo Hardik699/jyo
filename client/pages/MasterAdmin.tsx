@@ -211,8 +211,12 @@ export default function MasterAdmin() {
   const [loading, setLoading] = useState(true);
   const [dbOpen, setDbOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
-  const [isGoogleSheetsConfigured, setIsGoogleSheetsConfigured] = useState(false);
-  const [spreadsheetInfo, setSpreadsheetInfo] = useState<{ title?: string; url?: string } | null>(null);
+  const [isGoogleSheetsConfigured, setIsGoogleSheetsConfigured] =
+    useState(false);
+  const [spreadsheetInfo, setSpreadsheetInfo] = useState<{
+    title?: string;
+    url?: string;
+  } | null>(null);
   const [dbUnlocked, setDbUnlocked] = useState(false);
   const [dbPassword, setDbPassword] = useState("");
   const [hasSecureBackup, setHasSecureBackup] = useState(false);
@@ -231,7 +235,6 @@ export default function MasterAdmin() {
       })
       .catch(() => setIsGoogleSheetsConfigured(false));
   }, []);
-
 
   const loadAllData = () => {
     try {
@@ -313,7 +316,6 @@ export default function MasterAdmin() {
     }
   };
 
-
   const getAssetDetails = (assetId: string) => {
     const asset = masterData.systemAssets.find((a) => a.id === assetId);
     if (!asset) return assetId;
@@ -371,11 +373,14 @@ export default function MasterAdmin() {
                   onClick={async () => {
                     try {
                       setSyncing(true);
-                      const resp = await fetch("/api/google-sheets/sync-master-data", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ masterData }),
-                      });
+                      const resp = await fetch(
+                        "/api/google-sheets/sync-master-data",
+                        {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ masterData }),
+                        },
+                      );
                       const data = await resp.json();
                       if (!data?.success) alert(data?.error || "Sync failed");
                       else alert("Synced to Google Sheets");
@@ -386,7 +391,9 @@ export default function MasterAdmin() {
                   disabled={syncing}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2"
                 >
-                  <RefreshCw className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`} />
+                  <RefreshCw
+                    className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`}
+                  />
                   {syncing ? "Syncing..." : "Sync to Google Sheets"}
                 </Button>
                 {spreadsheetInfo?.url && (
@@ -422,31 +429,44 @@ export default function MasterAdmin() {
           </div>
         </header>
 
-        <Dialog open={dbOpen} onOpenChange={(o) => {
-          setDbOpen(o);
-          if (!o) {
-            setDbUnlocked(false);
-            setDbPassword("");
-          }
-        }}>
+        <Dialog
+          open={dbOpen}
+          onOpenChange={(o) => {
+            setDbOpen(o);
+            if (!o) {
+              setDbUnlocked(false);
+              setDbPassword("");
+            }
+          }}
+        >
           <DialogContent className="bg-slate-900/95 border-slate-700 text-white max-w-3xl">
             <DialogHeader>
               <DialogTitle>Master Data Database</DialogTitle>
               <DialogDescription className="text-slate-400">
-                Data is stored in your browser (no external database). Enter password to view.
+                Data is stored in your browser (no external database). Enter
+                password to view.
               </DialogDescription>
             </DialogHeader>
 
             {dbUnlocked ? (
               <div className="space-y-4">
                 {hasSecureBackup ? (
-                  <div className="text-xs text-slate-400">Encrypted backup detected.</div>
+                  <div className="text-xs text-slate-400">
+                    Encrypted backup detected.
+                  </div>
                 ) : null}
                 <div className="max-h-[50vh] overflow-auto rounded-md border border-slate-700 p-3 bg-slate-950">
-                  <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(masterData, null, 2)}</pre>
+                  <pre className="text-xs whitespace-pre-wrap">
+                    {JSON.stringify(masterData, null, 2)}
+                  </pre>
                 </div>
                 <DialogFooter className="flex gap-2">
-                  <Button onClick={exportAllData} className="bg-blue-600 hover:bg-blue-700">Download JSON</Button>
+                  <Button
+                    onClick={exportAllData}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Download JSON
+                  </Button>
                   <Button
                     onClick={async () => {
                       try {
@@ -474,7 +494,9 @@ export default function MasterAdmin() {
                         // Remove raw keys
                         for (const k of keys) localStorage.removeItem(k);
                         setHasSecureBackup(true);
-                        alert("Storage locked with encryption. Keep your password safe.");
+                        alert(
+                          "Storage locked with encryption. Keep your password safe.",
+                        );
                       } catch (e) {
                         alert("Failed to lock storage");
                       }
@@ -491,7 +513,9 @@ export default function MasterAdmin() {
                           alert("No encrypted backup found");
                           return;
                         }
-                        const data = await decryptToJSON<Record<string, unknown>>(encrypted, "1111");
+                        const data = await decryptToJSON<
+                          Record<string, unknown>
+                        >(encrypted, "1111");
                         Object.entries(data || {}).forEach(([k, v]) => {
                           localStorage.setItem(k, JSON.stringify(v));
                         });
@@ -505,7 +529,13 @@ export default function MasterAdmin() {
                   >
                     Restore Storage
                   </Button>
-                  <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => setDbOpen(false)}>Close</Button>
+                  <Button
+                    variant="outline"
+                    className="border-slate-600 text-slate-300"
+                    onClick={() => setDbOpen(false)}
+                  >
+                    Close
+                  </Button>
                 </DialogFooter>
               </div>
             ) : (
@@ -521,7 +551,9 @@ export default function MasterAdmin() {
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <label className="text-slate-300 text-sm">Enter password</label>
+                  <label className="text-slate-300 text-sm">
+                    Enter password
+                  </label>
                   <Input
                     type="password"
                     value={dbPassword}
@@ -531,7 +563,10 @@ export default function MasterAdmin() {
                   />
                 </div>
                 <DialogFooter>
-                  <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700">
+                  <Button
+                    type="submit"
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
                     Unlock
                   </Button>
                   <Button
@@ -607,31 +642,98 @@ export default function MasterAdmin() {
           </Card>
         </div>
 
-
         {/* Tabbed Data Tables */}
         <Card className="bg-slate-900/50 border-slate-700 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-white">
-              IT Data Tables
-            </CardTitle>
+            <CardTitle className="text-white">IT Data Tables</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="systemassets" className="w-full">
               <TabsList className="w-full flex flex-wrap gap-2 overflow-x-auto bg-slate-800/70 mb-6 p-1 rounded-lg">
-                <TabsTrigger value="systemassets" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">All Assets</TabsTrigger>
-                <TabsTrigger value="mouse" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Mouse</TabsTrigger>
-                <TabsTrigger value="keyboard" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Keyboard</TabsTrigger>
-                <TabsTrigger value="motherboard" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Motherboard</TabsTrigger>
-                <TabsTrigger value="ram" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">RAM</TabsTrigger>
-                <TabsTrigger value="storage" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Storage</TabsTrigger>
-                <TabsTrigger value="power-supply" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Power Supply</TabsTrigger>
-                <TabsTrigger value="headphone" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Headphone</TabsTrigger>
-                <TabsTrigger value="camera" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Camera</TabsTrigger>
-                <TabsTrigger value="monitor" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Monitor</TabsTrigger>
-                <TabsTrigger value="vonage" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Vonage</TabsTrigger>
-                <TabsTrigger value="pclaptops" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">PC/Laptops</TabsTrigger>
-                <TabsTrigger value="itaccounts" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">IT Accounts</TabsTrigger>
-                <TabsTrigger value="notifications" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">IT Notifications</TabsTrigger>
+                <TabsTrigger
+                  value="systemassets"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  All Assets
+                </TabsTrigger>
+                <TabsTrigger
+                  value="mouse"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Mouse
+                </TabsTrigger>
+                <TabsTrigger
+                  value="keyboard"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Keyboard
+                </TabsTrigger>
+                <TabsTrigger
+                  value="motherboard"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Motherboard
+                </TabsTrigger>
+                <TabsTrigger
+                  value="ram"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  RAM
+                </TabsTrigger>
+                <TabsTrigger
+                  value="storage"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Storage
+                </TabsTrigger>
+                <TabsTrigger
+                  value="power-supply"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Power Supply
+                </TabsTrigger>
+                <TabsTrigger
+                  value="headphone"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Headphone
+                </TabsTrigger>
+                <TabsTrigger
+                  value="camera"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Camera
+                </TabsTrigger>
+                <TabsTrigger
+                  value="monitor"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Monitor
+                </TabsTrigger>
+                <TabsTrigger
+                  value="vonage"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  Vonage
+                </TabsTrigger>
+                <TabsTrigger
+                  value="pclaptops"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  PC/Laptops
+                </TabsTrigger>
+                <TabsTrigger
+                  value="itaccounts"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  IT Accounts
+                </TabsTrigger>
+                <TabsTrigger
+                  value="notifications"
+                  className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1"
+                >
+                  IT Notifications
+                </TabsTrigger>
               </TabsList>
 
               {/* Employees Table */}
@@ -778,17 +880,39 @@ export default function MasterAdmin() {
                 <div className="space-y-4">
                   <Tabs defaultValue="all" className="w-full">
                     <TabsList className="hidden">
-                      <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-                      <TabsTrigger value="mouse" className="text-xs">Mouse</TabsTrigger>
-                      <TabsTrigger value="keyboard" className="text-xs">Keyboard</TabsTrigger>
-                      <TabsTrigger value="motherboard" className="text-xs">Motherboard</TabsTrigger>
-                      <TabsTrigger value="ram" className="text-xs">RAM</TabsTrigger>
-                      <TabsTrigger value="storage" className="text-xs">Storage</TabsTrigger>
-                      <TabsTrigger value="power-supply" className="text-xs">Power Supply</TabsTrigger>
-                      <TabsTrigger value="headphone" className="text-xs">Headphone</TabsTrigger>
-                      <TabsTrigger value="camera" className="text-xs">Camera</TabsTrigger>
-                      <TabsTrigger value="monitor" className="text-xs">Monitor</TabsTrigger>
-                      <TabsTrigger value="vonage" className="text-xs">Vonage</TabsTrigger>
+                      <TabsTrigger value="all" className="text-xs">
+                        All
+                      </TabsTrigger>
+                      <TabsTrigger value="mouse" className="text-xs">
+                        Mouse
+                      </TabsTrigger>
+                      <TabsTrigger value="keyboard" className="text-xs">
+                        Keyboard
+                      </TabsTrigger>
+                      <TabsTrigger value="motherboard" className="text-xs">
+                        Motherboard
+                      </TabsTrigger>
+                      <TabsTrigger value="ram" className="text-xs">
+                        RAM
+                      </TabsTrigger>
+                      <TabsTrigger value="storage" className="text-xs">
+                        Storage
+                      </TabsTrigger>
+                      <TabsTrigger value="power-supply" className="text-xs">
+                        Power Supply
+                      </TabsTrigger>
+                      <TabsTrigger value="headphone" className="text-xs">
+                        Headphone
+                      </TabsTrigger>
+                      <TabsTrigger value="camera" className="text-xs">
+                        Camera
+                      </TabsTrigger>
+                      <TabsTrigger value="monitor" className="text-xs">
+                        Monitor
+                      </TabsTrigger>
+                      <TabsTrigger value="vonage" className="text-xs">
+                        Vonage
+                      </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="all">
@@ -808,26 +932,45 @@ export default function MasterAdmin() {
                           <TableBody>
                             {masterData.systemAssets.map((asset) => (
                               <TableRow key={asset.id}>
-                                <TableCell className="font-mono">{asset.id}</TableCell>
+                                <TableCell className="font-mono">
+                                  {asset.id}
+                                </TableCell>
                                 <TableCell>
-                                  <Badge variant="outline">{asset.category}</Badge>
+                                  <Badge variant="outline">
+                                    {asset.category}
+                                  </Badge>
                                 </TableCell>
                                 <TableCell>{asset.vendorName}</TableCell>
-                                <TableCell className="font-mono">{asset.serialNumber}</TableCell>
-                                <TableCell>{new Date(asset.purchaseDate).toLocaleDateString()}</TableCell>
-                                <TableCell>{new Date(asset.warrantyEndDate).toLocaleDateString()}</TableCell>
+                                <TableCell className="font-mono">
+                                  {asset.serialNumber}
+                                </TableCell>
                                 <TableCell>
-                                  {asset.ramSize && `${asset.ramSize} ${asset.ramType || ""}`}
+                                  {new Date(
+                                    asset.purchaseDate,
+                                  ).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                  {new Date(
+                                    asset.warrantyEndDate,
+                                  ).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                  {asset.ramSize &&
+                                    `${asset.ramSize} ${asset.ramType || ""}`}
                                   {asset.processorModel && asset.processorModel}
-                                  {asset.storageType && `${asset.storageType} ${asset.storageCapacity || ""}`}
-                                  {asset.vonageNumber && `Tel: ${asset.vonageNumber}`}
+                                  {asset.storageType &&
+                                    `${asset.storageType} ${asset.storageCapacity || ""}`}
+                                  {asset.vonageNumber &&
+                                    `Tel: ${asset.vonageNumber}`}
                                 </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
                         </Table>
                         {masterData.systemAssets.length === 0 && (
-                          <div className="p-8 text-center text-slate-400">No system assets found</div>
+                          <div className="p-8 text-center text-slate-400">
+                            No system assets found
+                          </div>
                         )}
                       </div>
                     </TabsContent>
@@ -851,9 +994,13 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "mouse")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -883,9 +1030,13 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "keyboard")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -916,10 +1067,16 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "motherboard")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
-                                  <TableCell>{a.processorModel || "-"}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
+                                  <TableCell>
+                                    {a.processorModel || "-"}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -951,9 +1108,13 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "ram")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.ramSize || "-"}</TableCell>
                                   <TableCell>{a.ramType || "-"}</TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
@@ -987,11 +1148,17 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "storage")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.storageType || "-"}</TableCell>
-                                  <TableCell>{a.storageCapacity || "-"}</TableCell>
+                                  <TableCell>
+                                    {a.storageCapacity || "-"}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -1021,9 +1188,13 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "power-supply")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -1053,9 +1224,13 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "headphone")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -1085,9 +1260,13 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "camera")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -1117,9 +1296,13 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "monitor")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
-                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.serialNumber}
+                                  </TableCell>
                                   <TableCell>{a.vendorName}</TableCell>
                                   <TableCell>{a.purchaseDate}</TableCell>
                                   <TableCell>{a.warrantyEndDate}</TableCell>
@@ -1150,7 +1333,9 @@ export default function MasterAdmin() {
                               .filter((a) => a.category === "vonage")
                               .map((a) => (
                                 <TableRow key={a.id}>
-                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell className="font-mono">
+                                    {a.id}
+                                  </TableCell>
                                   <TableCell>{a.companyName}</TableCell>
                                   <TableCell>{a.vonageNumber}</TableCell>
                                   <TableCell>{a.vonageExtCode}</TableCell>
@@ -1188,10 +1373,16 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1220,10 +1411,16 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1253,11 +1450,17 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.processorModel || "-"}</TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1288,12 +1491,18 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.ramSize || "-"}</TableCell>
                             <TableCell>{a.ramType || "-"}</TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1324,12 +1533,18 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.storageType || "-"}</TableCell>
                             <TableCell>{a.storageCapacity || "-"}</TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1358,10 +1573,16 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1390,10 +1611,16 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1422,10 +1649,16 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1454,10 +1687,16 @@ export default function MasterAdmin() {
                           <TableRow key={a.id}>
                             <TableCell className="font-mono">{a.id}</TableCell>
                             <TableCell>{a.companyName}</TableCell>
-                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell className="font-mono">
+                              {a.serialNumber}
+                            </TableCell>
                             <TableCell>{a.vendorName}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1490,8 +1729,12 @@ export default function MasterAdmin() {
                             <TableCell>{a.vonageNumber}</TableCell>
                             <TableCell>{a.vonageExtCode}</TableCell>
                             <TableCell>{a.vonagePassword}</TableCell>
-                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
-                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              {new Date(a.purchaseDate).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(a.warrantyEndDate).toLocaleDateString()}
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>

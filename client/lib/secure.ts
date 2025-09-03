@@ -11,7 +11,8 @@ const td = new TextDecoder();
 function ab2b64(ab: ArrayBuffer): string {
   const bytes = new Uint8Array(ab);
   let binary = "";
-  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  for (let i = 0; i < bytes.length; i++)
+    binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
 
@@ -22,7 +23,10 @@ function b642ab(base64: string): ArrayBuffer {
   return bytes.buffer;
 }
 
-async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey> {
+async function deriveKey(
+  password: string,
+  salt: ArrayBuffer,
+): Promise<CryptoKey> {
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
     te.encode(password),
@@ -44,11 +48,18 @@ async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey
   );
 }
 
-export async function encryptText(text: string, password: string): Promise<string> {
+export async function encryptText(
+  text: string,
+  password: string,
+): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(16)).buffer;
   const iv = crypto.getRandomValues(new Uint8Array(12)).buffer;
   const key = await deriveKey(password, salt);
-  const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, te.encode(text));
+  const cipher = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    te.encode(text),
+  );
   const payload: EncryptedPayload = {
     v: 1,
     s: ab2b64(salt),
@@ -58,7 +69,10 @@ export async function encryptText(text: string, password: string): Promise<strin
   return JSON.stringify(payload);
 }
 
-export async function decryptText(payloadStr: string, password: string): Promise<string> {
+export async function decryptText(
+  payloadStr: string,
+  password: string,
+): Promise<string> {
   const payload: EncryptedPayload = JSON.parse(payloadStr);
   if (!payload || payload.v !== 1) throw new Error("Unsupported payload");
   const salt = b642ab(payload.s);
@@ -69,11 +83,17 @@ export async function decryptText(payloadStr: string, password: string): Promise
   return td.decode(plain);
 }
 
-export async function encryptJSON(obj: unknown, password: string): Promise<string> {
+export async function encryptJSON(
+  obj: unknown,
+  password: string,
+): Promise<string> {
   return encryptText(JSON.stringify(obj), password);
 }
 
-export async function decryptToJSON<T = unknown>(payloadStr: string, password: string): Promise<T> {
+export async function decryptToJSON<T = unknown>(
+  payloadStr: string,
+  password: string,
+): Promise<T> {
   const txt = await decryptText(payloadStr, password);
   return JSON.parse(txt) as T;
 }
