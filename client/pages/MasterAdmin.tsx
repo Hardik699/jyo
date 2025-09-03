@@ -513,19 +513,21 @@ export default function MasterAdmin() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="systemassets" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 bg-slate-800 mb-6">
-                <TabsTrigger value="systemassets" className="text-xs">
-                  System Assets
-                </TabsTrigger>
-                <TabsTrigger value="pclaptops" className="text-xs">
-                  PC/Laptops
-                </TabsTrigger>
-                <TabsTrigger value="itaccounts" className="text-xs">
-                  IT Accounts
-                </TabsTrigger>
-                <TabsTrigger value="notifications" className="text-xs">
-                  IT Notifications
-                </TabsTrigger>
+              <TabsList className="w-full flex flex-wrap gap-2 overflow-x-auto bg-slate-800/70 mb-6 p-1 rounded-lg">
+                <TabsTrigger value="systemassets" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">All Assets</TabsTrigger>
+                <TabsTrigger value="mouse" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Mouse</TabsTrigger>
+                <TabsTrigger value="keyboard" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Keyboard</TabsTrigger>
+                <TabsTrigger value="motherboard" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Motherboard</TabsTrigger>
+                <TabsTrigger value="ram" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">RAM</TabsTrigger>
+                <TabsTrigger value="storage" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Storage</TabsTrigger>
+                <TabsTrigger value="power-supply" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Power Supply</TabsTrigger>
+                <TabsTrigger value="headphone" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Headphone</TabsTrigger>
+                <TabsTrigger value="camera" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Camera</TabsTrigger>
+                <TabsTrigger value="monitor" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Monitor</TabsTrigger>
+                <TabsTrigger value="vonage" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">Vonage</TabsTrigger>
+                <TabsTrigger value="pclaptops" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">PC/Laptops</TabsTrigger>
+                <TabsTrigger value="itaccounts" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">IT Accounts</TabsTrigger>
+                <TabsTrigger value="notifications" className="text-xs whitespace-nowrap data-[state=active]:bg-blue-500 data-[state=active]:text-white rounded-md px-3 py-1">IT Notifications</TabsTrigger>
               </TabsList>
 
               {/* Employees Table */}
@@ -671,7 +673,7 @@ export default function MasterAdmin() {
               <TabsContent value="systemassets">
                 <div className="space-y-4">
                   <Tabs defaultValue="all" className="w-full">
-                    <TabsList className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 bg-slate-800">
+                    <TabsList className="hidden">
                       <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
                       <TabsTrigger value="mouse" className="text-xs">Mouse</TabsTrigger>
                       <TabsTrigger value="keyboard" className="text-xs">Keyboard</TabsTrigger>
@@ -1058,6 +1060,338 @@ export default function MasterAdmin() {
                       </div>
                     </TabsContent>
                   </Tabs>
+                </div>
+              </TabsContent>
+
+              {/* Mouse */}
+              <TabsContent value="mouse">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "mouse")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Keyboard */}
+              <TabsContent value="keyboard">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "keyboard")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Motherboard */}
+              <TabsContent value="motherboard">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Processor</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "motherboard")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.processorModel || "-"}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* RAM */}
+              <TabsContent value="ram">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>RAM Size</TableHead>
+                        <TableHead>RAM Type</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "ram")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.ramSize || "-"}</TableCell>
+                            <TableCell>{a.ramType || "-"}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Storage */}
+              <TabsContent value="storage">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Capacity</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "storage")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.storageType || "-"}</TableCell>
+                            <TableCell>{a.storageCapacity || "-"}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Power Supply */}
+              <TabsContent value="power-supply">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "power-supply")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Headphone */}
+              <TabsContent value="headphone">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "headphone")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Camera */}
+              <TabsContent value="camera">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "camera")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Monitor */}
+              <TabsContent value="monitor">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Serial</TableHead>
+                        <TableHead>Vendor</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "monitor")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                            <TableCell>{a.vendorName}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              {/* Vonage */}
+              <TabsContent value="vonage">
+                <div className="rounded-md border border-slate-700">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Number</TableHead>
+                        <TableHead>Ext Code</TableHead>
+                        <TableHead>Password</TableHead>
+                        <TableHead>Purchase</TableHead>
+                        <TableHead>Warranty End</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {masterData.systemAssets
+                        .filter((a) => a.category === "vonage")
+                        .map((a) => (
+                          <TableRow key={a.id}>
+                            <TableCell className="font-mono">{a.id}</TableCell>
+                            <TableCell>{a.companyName}</TableCell>
+                            <TableCell>{a.vonageNumber}</TableCell>
+                            <TableCell>{a.vonageExtCode}</TableCell>
+                            <TableCell>{a.vonagePassword}</TableCell>
+                            <TableCell>{new Date(a.purchaseDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(a.warrantyEndDate).toLocaleDateString()}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
                 </div>
               </TabsContent>
 
