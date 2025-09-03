@@ -6,8 +6,8 @@ import { handleDemo } from "./routes/demo";
 import { attachIdentity } from "./middleware/auth";
 import { salariesRouter } from "./routes/salaries";
 import {
-  syncMasterDataToGoogleSheets,
   getSpreadsheetInfo,
+  syncMasterDataToGoogleSheets,
 } from "./services/googleSheets";
 
 export function createServer() {
@@ -33,7 +33,7 @@ export function createServer() {
   // Salaries API
   app.use("/api/salaries", salariesRouter());
 
-  // Google Sheets API for Master Data
+  // Google Sheets integration (admin only recommended on client)
   app.post("/api/google-sheets/sync-master-data", syncMasterDataToGoogleSheets);
   app.get("/api/google-sheets/info", getSpreadsheetInfo);
 
