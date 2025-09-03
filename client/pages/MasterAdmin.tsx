@@ -210,6 +210,7 @@ export default function MasterAdmin() {
   const [dbOpen, setDbOpen] = useState(false);
   const [dbUnlocked, setDbUnlocked] = useState(false);
   const [dbPassword, setDbPassword] = useState("");
+  const [hasSecureBackup, setHasSecureBackup] = useState(false);
 
   useEffect(() => {
     loadAllData();
