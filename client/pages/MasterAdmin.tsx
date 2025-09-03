@@ -389,22 +389,73 @@ export default function MasterAdmin() {
 
             {dbUnlocked ? (
               <div className="space-y-4">
+                {hasSecureBackup ? (
+                  <div className="text-xs text-slate-400">Encrypted backup detected.</div>
+                ) : null}
                 <div className="max-h-[50vh] overflow-auto rounded-md border border-slate-700 p-3 bg-slate-950">
-                  <pre className="text-xs whitespace-pre-wrap">
-{JSON.stringify(masterData, null, 2)}
-                  </pre>
+                  <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(masterData, null, 2)}</pre>
                 </div>
-                <DialogFooter>
-                  <Button onClick={exportAllData} className="bg-blue-600 hover:bg-blue-700">
-                    Download JSON
+                <DialogFooter className="flex gap-2">
+                  <Button onClick={exportAllData} className="bg-blue-600 hover:bg-blue-700">Download JSON</Button>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const payload: Record<string, unknown> = {};
+                        // Collect known keys
+                        const keys = [
+                          "users",
+                          "userCredentials",
+                          "hrEmployees",
+                          "departments",
+                          "leaveRequests",
+                          "attendanceRecords",
+                          "systemAssets",
+                          "pcLaptopAssets",
+                          "itAccounts",
+                          "salaryRecords",
+                          "pendingITNotifications",
+                        ];
+                        for (const k of keys) {
+                          const v = localStorage.getItem(k);
+                          if (v) payload[k] = JSON.parse(v);
+                        }
+                        const encrypted = await encryptJSON(payload, "1111");
+                        localStorage.setItem("secureDB", encrypted);
+                        // Remove raw keys
+                        for (const k of keys) localStorage.removeItem(k);
+                        setHasSecureBackup(true);
+                        alert("Storage locked with encryption. Keep your password safe.");
+                      } catch (e) {
+                        alert("Failed to lock storage");
+                      }
+                    }}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Lock Storage
                   </Button>
                   <Button
+                    onClick={async () => {
+                      try {
+                        const encrypted = localStorage.getItem("secureDB");
+                        if (!encrypted) {
+                          alert("No encrypted backup found");
+                          return;
+                        }
+                        const data = await decryptToJSON<Record<string, unknown>>(encrypted, "1111");
+                        Object.entries(data || {}).forEach(([k, v]) => {
+                          localStorage.setItem(k, JSON.stringify(v));
+                        });
+                        alert("Storage restored from encrypted backup");
+                      } catch (e) {
+                        alert("Failed to unlock storage");
+                      }
+                    }}
                     variant="outline"
                     className="border-slate-600 text-slate-300"
-                    onClick={() => setDbOpen(false)}
                   >
-                    Close
+                    Restore Storage
                   </Button>
+                  <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => setDbOpen(false)}>Close</Button>
                 </DialogFooter>
               </div>
             ) : (
