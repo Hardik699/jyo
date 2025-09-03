@@ -164,10 +164,17 @@ export default function SystemInfo() {
               </CardHeader>
               <CardContent className="flex items-center justify-end gap-2">
                 <Button
-                  onClick={() => navigate(`/system-info/${slug}`)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-blue-500/20 transition-transform duration-300 hover:scale-105"
+                  onClick={() => navigate(`/system-info/${slug}?add=1`)}
+                  className="bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-green-500/20 transition-transform duration-300 hover:scale-105"
                 >
-                  Go
+                  Add
+                </Button>
+                <Button
+                  onClick={() => navigate(`/system-info/${slug}`)}
+                  variant="outline"
+                  className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-transform duration-300"
+                >
+                  View
                 </Button>
               </CardContent>
             </Card>
