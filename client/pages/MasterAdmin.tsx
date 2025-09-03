@@ -351,20 +351,6 @@ export default function MasterAdmin() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-slate-400 text-sm">Total Employees</p>
-                  <p className="text-2xl font-bold text-white">
-                    {masterData.employees.length}
-                  </p>
-                </div>
-                <Users className="h-8 w-8 text-blue-400" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-900/50 border-slate-700">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
                   <p className="text-slate-400 text-sm">System Assets</p>
                   <p className="text-2xl font-bold text-white">
                     {masterData.systemAssets.length}
@@ -402,6 +388,20 @@ export default function MasterAdmin() {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="bg-slate-900/50 border-slate-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-slate-400 text-sm">IT Notifications</p>
+                  <p className="text-2xl font-bold text-white">
+                    {masterData.pendingITNotifications.length}
+                  </p>
+                </div>
+                <AlertCircle className="h-8 w-8 text-red-400" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
 
@@ -409,21 +409,12 @@ export default function MasterAdmin() {
         <Card className="bg-slate-900/50 border-slate-700 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-white">
-              Complete Database Tables
+              IT Data Tables
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="employees" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9 bg-slate-800 mb-6">
-                <TabsTrigger value="employees" className="text-xs">
-                  Employees
-                </TabsTrigger>
-                <TabsTrigger value="admin" className="text-xs">
-                  Admin Users
-                </TabsTrigger>
-                <TabsTrigger value="departments" className="text-xs">
-                  Departments
-                </TabsTrigger>
+            <Tabs defaultValue="systemassets" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 bg-slate-800 mb-6">
                 <TabsTrigger value="systemassets" className="text-xs">
                   System Assets
                 </TabsTrigger>
@@ -432,12 +423,6 @@ export default function MasterAdmin() {
                 </TabsTrigger>
                 <TabsTrigger value="itaccounts" className="text-xs">
                   IT Accounts
-                </TabsTrigger>
-                <TabsTrigger value="salaries" className="text-xs">
-                  Salaries
-                </TabsTrigger>
-                <TabsTrigger value="leaves" className="text-xs">
-                  Leave Requests
                 </TabsTrigger>
                 <TabsTrigger value="notifications" className="text-xs">
                   IT Notifications
