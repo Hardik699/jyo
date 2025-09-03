@@ -23,9 +23,6 @@ import {
   UserCheck,
   AlertCircle,
   Database,
-  RefreshCw,
-  ExternalLink,
-  Settings,
 } from "lucide-react";
 
 // Type definitions based on the application's data structures
@@ -200,39 +197,11 @@ export default function MasterAdmin() {
   });
 
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
-  const [isGoogleSheetsConfigured, setIsGoogleSheetsConfigured] =
-    useState(false);
-  const [spreadsheetInfo, setSpreadsheetInfo] = useState<{
-    title?: string;
-    url?: string;
-    sheets?: Array<{ title: string; sheetId: number }>;
-  }>({});
 
   useEffect(() => {
     loadAllData();
-    checkGoogleSheetsConfiguration();
   }, []);
 
-  const checkGoogleSheetsConfiguration = async () => {
-    try {
-      const response = await fetch("/api/google-sheets/info");
-      if (response.ok) {
-        const data = await response.json();
-        setIsGoogleSheetsConfigured(data.success);
-        if (data.success) {
-          setSpreadsheetInfo({
-            title: data.title,
-            url: data.url,
-            sheets: data.sheets,
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error checking Google Sheets configuration:", error);
-      setIsGoogleSheetsConfigured(false);
-    }
-  };
 
   const loadAllData = () => {
     try {
@@ -314,34 +283,6 @@ export default function MasterAdmin() {
     }
   };
 
-  const syncToGoogleSheets = async () => {
-    try {
-      setSyncing(true);
-
-      const response = await fetch("/api/google-sheets/sync-master-data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ masterData }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert(
-          `Successfully synced all data to Google Sheets!\n\nRecords updated:\n- Employees: ${result.recordCounts.employees}\n- System Assets: ${result.recordCounts.systemAssets}\n- PC/Laptops: ${result.recordCounts.pcLaptopConfigs}\n- IT Accounts: ${result.recordCounts.itAccounts}\n- Salary Records: ${result.recordCounts.salaryRecords}\n- And ${result.sheetsUpdated - 5} more sheets`,
-        );
-      } else {
-        alert(`Error syncing to Google Sheets: ${result.error}`);
-      }
-    } catch (error) {
-      console.error("Sync error:", error);
-      alert("Error syncing to Google Sheets. Please try again.");
-    } finally {
-      setSyncing(false);
-    }
-  };
 
   const getAssetDetails = (assetId: string) => {
     const asset = masterData.systemAssets.find((a) => a.id === assetId);
@@ -394,40 +335,6 @@ export default function MasterAdmin() {
               <Download className="h-4 w-4" />
               Export All Data
             </Button>
-            {isGoogleSheetsConfigured && (
-              <Button
-                onClick={syncToGoogleSheets}
-                disabled={syncing}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2"
-              >
-                <RefreshCw
-                  className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`}
-                />
-                {syncing ? "Syncing..." : "Sync to Google Sheets"}
-              </Button>
-            )}
-            {isGoogleSheetsConfigured && spreadsheetInfo.url && (
-              <Button
-                onClick={() => window.open(spreadsheetInfo.url, "_blank")}
-                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Open Spreadsheet
-              </Button>
-            )}
-            {!isGoogleSheetsConfigured && (
-              <Button
-                onClick={() =>
-                  alert(
-                    "Please configure Google Sheets first.\n\n1. Set GOOGLE_SHEET_ID in environment variables\n2. Set GOOGLE_SERVICE_ACCOUNT_CREDENTIALS in environment variables\n3. Share your Google Sheet with the service account email",
-                  )
-                }
-                className="bg-yellow-600 hover:bg-yellow-700 text-white flex items-center gap-2"
-              >
-                <Settings className="h-4 w-4" />
-                Setup Google Sheets
-              </Button>
-            )}
             <Button
               onClick={loadAllData}
               className="bg-slate-600 hover:bg-slate-700 text-white flex items-center gap-2"
@@ -497,107 +404,6 @@ export default function MasterAdmin() {
           </Card>
         </div>
 
-        {/* Google Sheets Status */}
-        <Card className="bg-slate-900/50 border-slate-700">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <RefreshCw className="h-5 w-5" />
-              Google Sheets Integration Status
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isGoogleSheetsConfigured ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Badge variant="default" className="bg-green-600">
-                    Connected
-                  </Badge>
-                  <span className="text-white">
-                    Google Sheets is configured and ready
-                  </span>
-                </div>
-                {spreadsheetInfo.title && (
-                  <div className="text-sm text-slate-300">
-                    <span className="font-medium">Spreadsheet:</span>{" "}
-                    {spreadsheetInfo.title}
-                  </div>
-                )}
-                {spreadsheetInfo.sheets &&
-                  spreadsheetInfo.sheets.length > 0 && (
-                    <div className="text-sm text-slate-300">
-                      <span className="font-medium">Sheets:</span>{" "}
-                      {spreadsheetInfo.sheets.map((s) => s.title).join(", ")}
-                    </div>
-                  )}
-                <div className="flex gap-2">
-                  <Button
-                    onClick={syncToGoogleSheets}
-                    disabled={syncing}
-                    size="sm"
-                    className="bg-emerald-600 hover:bg-emerald-700"
-                  >
-                    <RefreshCw
-                      className={`h-4 w-4 mr-2 ${syncing ? "animate-spin" : ""}`}
-                    />
-                    {syncing ? "Syncing..." : "Sync All Data"}
-                  </Button>
-                  {spreadsheetInfo.url && (
-                    <Button
-                      onClick={() => window.open(spreadsheetInfo.url, "_blank")}
-                      size="sm"
-                      variant="outline"
-                      className="border-slate-600 text-slate-300"
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Open Spreadsheet
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Badge variant="destructive">Not Configured</Badge>
-                  <span className="text-white">
-                    Google Sheets integration not set up
-                  </span>
-                </div>
-                <div className="text-sm text-slate-400">
-                  <p className="mb-2">
-                    To enable Google Sheets sync, you need to:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 ml-4">
-                    <li>Create a Google Service Account</li>
-                    <li>Download the service account JSON credentials</li>
-                    <li>
-                      Set GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment
-                      variable
-                    </li>
-                    <li>
-                      Create a Google Sheet and set GOOGLE_SHEET_ID environment
-                      variable
-                    </li>
-                    <li>
-                      Share the Google Sheet with your service account email
-                    </li>
-                  </ul>
-                </div>
-                <Button
-                  onClick={() =>
-                    alert(
-                      "Please refer to the setup documentation for detailed instructions on configuring Google Sheets integration.",
-                    )
-                  }
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Setup Instructions
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
         {/* Tabbed Data Tables */}
         <Card className="bg-slate-900/50 border-slate-700 backdrop-blur-sm">
