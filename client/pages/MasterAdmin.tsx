@@ -13,6 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { encryptJSON, decryptToJSON } from "@/lib/secure";
 import {
   Table,
   TableBody,
