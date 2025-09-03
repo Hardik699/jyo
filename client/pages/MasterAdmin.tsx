@@ -4,6 +4,15 @@ import AppNav from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -197,6 +206,9 @@ export default function MasterAdmin() {
   });
 
   const [loading, setLoading] = useState(true);
+  const [dbOpen, setDbOpen] = useState(false);
+  const [dbUnlocked, setDbUnlocked] = useState(false);
+  const [dbPassword, setDbPassword] = useState("");
 
   useEffect(() => {
     loadAllData();
@@ -336,6 +348,18 @@ export default function MasterAdmin() {
               Export All Data
             </Button>
             <Button
+              onClick={() => {
+                setDbOpen(true);
+                setDbUnlocked(false);
+                setDbPassword("");
+              }}
+              variant="outline"
+              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+            >
+              <Database className="h-4 w-4 mr-2" />
+              Database
+            </Button>
+            <Button
               onClick={loadAllData}
               className="bg-slate-600 hover:bg-slate-700 text-white flex items-center gap-2"
             >
@@ -344,6 +368,81 @@ export default function MasterAdmin() {
             </Button>
           </div>
         </header>
+
+        <Dialog open={dbOpen} onOpenChange={(o) => {
+          setDbOpen(o);
+          if (!o) {
+            setDbUnlocked(false);
+            setDbPassword("");
+          }
+        }}>
+          <DialogContent className="bg-slate-900/95 border-slate-700 text-white max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Master Data Database</DialogTitle>
+              <DialogDescription className="text-slate-400">
+                Data is stored in your browser (no external database). Enter password to view.
+              </DialogDescription>
+            </DialogHeader>
+
+            {dbUnlocked ? (
+              <div className="space-y-4">
+                <div className="max-h-[50vh] overflow-auto rounded-md border border-slate-700 p-3 bg-slate-950">
+                  <pre className="text-xs whitespace-pre-wrap">
+{JSON.stringify(masterData, null, 2)}
+                  </pre>
+                </div>
+                <DialogFooter>
+                  <Button onClick={exportAllData} className="bg-blue-600 hover:bg-blue-700">
+                    Download JSON
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-slate-600 text-slate-300"
+                    onClick={() => setDbOpen(false)}
+                  >
+                    Close
+                  </Button>
+                </DialogFooter>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (dbPassword === "1111") {
+                    setDbUnlocked(true);
+                  } else {
+                    alert("Incorrect password");
+                  }
+                }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <label className="text-slate-300 text-sm">Enter password</label>
+                  <Input
+                    type="password"
+                    value={dbPassword}
+                    onChange={(e) => setDbPassword(e.target.value)}
+                    className="bg-slate-800/50 border-slate-700 text-white"
+                    placeholder="Password"
+                  />
+                </div>
+                <DialogFooter>
+                  <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700">
+                    Unlock
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="border-slate-600 text-slate-300"
+                    onClick={() => setDbOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
