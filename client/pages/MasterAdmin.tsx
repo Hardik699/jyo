@@ -568,59 +568,397 @@ export default function MasterAdmin() {
                 </div>
               </TabsContent>
 
-              {/* System Assets Table */}
+              {/* System Assets Table with category filters */}
               <TabsContent value="systemassets">
-                <div className="rounded-md border border-slate-700">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Asset ID</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Vendor</TableHead>
-                        <TableHead>Serial Number</TableHead>
-                        <TableHead>Purchase Date</TableHead>
-                        <TableHead>Warranty End</TableHead>
-                        <TableHead>Specifications</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {masterData.systemAssets.map((asset) => (
-                        <TableRow key={asset.id}>
-                          <TableCell className="font-mono">
-                            {asset.id}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{asset.category}</Badge>
-                          </TableCell>
-                          <TableCell>{asset.vendorName}</TableCell>
-                          <TableCell className="font-mono">
-                            {asset.serialNumber}
-                          </TableCell>
-                          <TableCell>
-                            {new Date(asset.purchaseDate).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            {new Date(
-                              asset.warrantyEndDate,
-                            ).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            {asset.ramSize &&
-                              `${asset.ramSize} ${asset.ramType || ""}`}
-                            {asset.processorModel && asset.processorModel}
-                            {asset.storageType &&
-                              `${asset.storageType} ${asset.storageCapacity || ""}`}
-                            {asset.vonageNumber && `Tel: ${asset.vonageNumber}`}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  {masterData.systemAssets.length === 0 && (
-                    <div className="p-8 text-center text-slate-400">
-                      No system assets found
-                    </div>
-                  )}
+                <div className="space-y-4">
+                  <Tabs defaultValue="all" className="w-full">
+                    <TabsList className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 bg-slate-800">
+                      <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
+                      <TabsTrigger value="mouse" className="text-xs">Mouse</TabsTrigger>
+                      <TabsTrigger value="keyboard" className="text-xs">Keyboard</TabsTrigger>
+                      <TabsTrigger value="motherboard" className="text-xs">Motherboard</TabsTrigger>
+                      <TabsTrigger value="ram" className="text-xs">RAM</TabsTrigger>
+                      <TabsTrigger value="storage" className="text-xs">Storage</TabsTrigger>
+                      <TabsTrigger value="power-supply" className="text-xs">Power Supply</TabsTrigger>
+                      <TabsTrigger value="headphone" className="text-xs">Headphone</TabsTrigger>
+                      <TabsTrigger value="camera" className="text-xs">Camera</TabsTrigger>
+                      <TabsTrigger value="monitor" className="text-xs">Monitor</TabsTrigger>
+                      <TabsTrigger value="vonage" className="text-xs">Vonage</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="all">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Asset ID</TableHead>
+                              <TableHead>Category</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Serial Number</TableHead>
+                              <TableHead>Purchase Date</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                              <TableHead>Specifications</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets.map((asset) => (
+                              <TableRow key={asset.id}>
+                                <TableCell className="font-mono">{asset.id}</TableCell>
+                                <TableCell>
+                                  <Badge variant="outline">{asset.category}</Badge>
+                                </TableCell>
+                                <TableCell>{asset.vendorName}</TableCell>
+                                <TableCell className="font-mono">{asset.serialNumber}</TableCell>
+                                <TableCell>{new Date(asset.purchaseDate).toLocaleDateString()}</TableCell>
+                                <TableCell>{new Date(asset.warrantyEndDate).toLocaleDateString()}</TableCell>
+                                <TableCell>
+                                  {asset.ramSize && `${asset.ramSize} ${asset.ramType || ""}`}
+                                  {asset.processorModel && asset.processorModel}
+                                  {asset.storageType && `${asset.storageType} ${asset.storageCapacity || ""}`}
+                                  {asset.vonageNumber && `Tel: ${asset.vonageNumber}`}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                        {masterData.systemAssets.length === 0 && (
+                          <div className="p-8 text-center text-slate-400">No system assets found</div>
+                        )}
+                      </div>
+                    </TabsContent>
+
+                    {/* Mouse */}
+                    <TabsContent value="mouse">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "mouse")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Keyboard */}
+                    <TabsContent value="keyboard">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "keyboard")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Motherboard */}
+                    <TabsContent value="motherboard">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Processor</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "motherboard")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.processorModel || "-"}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* RAM */}
+                    <TabsContent value="ram">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>RAM Size</TableHead>
+                              <TableHead>RAM Type</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "ram")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.ramSize || "-"}</TableCell>
+                                  <TableCell>{a.ramType || "-"}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Storage */}
+                    <TabsContent value="storage">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Type</TableHead>
+                              <TableHead>Capacity</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "storage")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.storageType || "-"}</TableCell>
+                                  <TableCell>{a.storageCapacity || "-"}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Power Supply */}
+                    <TabsContent value="power-supply">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "power-supply")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Headphone */}
+                    <TabsContent value="headphone">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "headphone")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Camera */}
+                    <TabsContent value="camera">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "camera")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Monitor */}
+                    <TabsContent value="monitor">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Serial</TableHead>
+                              <TableHead>Vendor</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "monitor")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell className="font-mono">{a.serialNumber}</TableCell>
+                                  <TableCell>{a.vendorName}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+
+                    {/* Vonage */}
+                    <TabsContent value="vonage">
+                      <div className="rounded-md border border-slate-700">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>ID</TableHead>
+                              <TableHead>Company</TableHead>
+                              <TableHead>Number</TableHead>
+                              <TableHead>Ext Code</TableHead>
+                              <TableHead>Password</TableHead>
+                              <TableHead>Purchase</TableHead>
+                              <TableHead>Warranty End</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {masterData.systemAssets
+                              .filter((a) => a.category === "vonage")
+                              .map((a) => (
+                                <TableRow key={a.id}>
+                                  <TableCell className="font-mono">{a.id}</TableCell>
+                                  <TableCell>{a.companyName}</TableCell>
+                                  <TableCell>{a.vonageNumber}</TableCell>
+                                  <TableCell>{a.vonageExtCode}</TableCell>
+                                  <TableCell>{a.vonagePassword}</TableCell>
+                                  <TableCell>{a.purchaseDate}</TableCell>
+                                  <TableCell>{a.warrantyEndDate}</TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </div>
               </TabsContent>
 
