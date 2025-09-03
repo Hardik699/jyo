@@ -214,6 +214,7 @@ export default function MasterAdmin() {
 
   useEffect(() => {
     loadAllData();
+    setHasSecureBackup(!!localStorage.getItem("secureDB"));
   }, []);
 
 
