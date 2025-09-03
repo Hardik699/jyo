@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Mouse,
   Keyboard,
@@ -146,7 +146,6 @@ const registry: Record<
 export default function SystemInfoDetail() {
   const navigate = useNavigate();
   const { slug = "" } = useParams();
-  const [searchParams] = useSearchParams();
   const key = (slug || "").toLowerCase();
   const data = registry[key];
   const categoryKey = canonical[key] || key;
@@ -176,13 +175,6 @@ export default function SystemInfoDetail() {
     const raw = localStorage.getItem(STORAGE_KEY);
     setAssets(raw ? JSON.parse(raw) : []);
   }, []);
-
-  useEffect(() => {
-    if (searchParams.get("add") === "1" && data) {
-      openForm();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, data]);
 
   const filtered = useMemo(
     () => assets.filter((a) => a.category === categoryKey),
